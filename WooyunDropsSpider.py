@@ -2,7 +2,7 @@
 #!encoding=UTF-8
 '''
    采集wooyun知识库文章的脚本，改自Tools上的。
-
+   下载的文章默认保存在当前目录下drops文件夹下面
 '''
 import urllib2
 import requests
