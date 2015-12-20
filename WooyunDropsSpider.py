@@ -1,10 +1,10 @@
 #/usr/bin/env python
 #!encoding=UTF-8
 '''
-   采集wooyun知识库文章的脚本，改自Tools上的。
-
+   采集wooyun知识库文章的脚本，改自Tools上。
+   修改时间：2015-12-20
+   修改作者: cf_hb 
 '''
-
 import urllib2
 import requests
 import re
@@ -16,7 +16,23 @@ import time
 import os
 reload(sys)
 sys.setdefaultencoding("utf-8" )
+
+#默认保存文件夹
 FileName = "drops"
+#默认使用30个线程
+ThreadNum  = 30
+#采集网站地址
+SiteUrl = "http://drops.wooyun.org/"
+#线程队列
+threads = []
+#总页数
+TotalPage = 0
+#所有列表页面URL
+PageListUrls = []
+#所有文章URL
+PageUrls = []
+#文章内容
+Articles = []
 
 #获取总页数
 def get_total_page_number(url):
@@ -118,25 +134,14 @@ def cache_Articles(url,title, author, content):
     finally:
         fw.close()
 def main():
-	#30个线程
-    ThreadNum  = 30
+    global ThreadNum
+    global SiteUrl
+    global threads
+    global TotalPage
+    global PageListUrls
+    global PageUrls
+    global Articles
 
-    threads = []
-    
-    #采集网站地址
-    SiteUrl = "http://drops.wooyun.org/"
-
-    #总页数
-    TotalPage = 0
-
-    #所有列表页面URL
-    PageListUrls = []
-
-    #所有文章URL
-    PageUrls = []
-
-    #文章内容
-    Articles = []
 
     #获取总页数
     TotalPage = get_total_page_number( SiteUrl )
