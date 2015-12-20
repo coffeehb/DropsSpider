@@ -2,8 +2,9 @@
 #!encoding=UTF-8
 '''
    采集wooyun知识库文章的脚本，改自Tools上的。
-   下载的文章默认保存在当前目录下drops文件夹下面
+
 '''
+
 import urllib2
 import requests
 import re
@@ -12,10 +13,10 @@ import hashlib
 import math
 import threading
 import time
-
+import os
 reload(sys)
 sys.setdefaultencoding("utf-8" )
-
+FileName = "drops"
 
 #获取总页数
 def get_total_page_number(url):
@@ -61,10 +62,11 @@ def get_article_content(PageUrls):
         section = path_section.findall(content)
         #将采集数据缓存本地
         cache_Articles(url,title[0],author[0],section[0])
-        print "Successed Downloading >> "+url
+        
 
 #将采集数据缓存本地 \/:*?"><|
 def cache_Articles(url,title, author, content):
+    global FileName
     try:
         filename = title.decode("UTF-8").encode('GBK')+".html"
     except Exception,e:
@@ -87,13 +89,13 @@ def cache_Articles(url,title, author, content):
     filename = filename.replace("|",".")
     filename = filename.replace("'","\\'")
 #保存在当前目录的drops文件夹下面
-    filename = "drops/"+filename
-    
+    filename = FileName+"/"+filename
+    print "Successed Downloading >> "+filename
     try:
         fw = open(filename,"w+")
     except Exception,e:
     	#用文章的名字创建文件失败时，使用当前时间创建html文件
-        Fname ="drops/"+str(int(time.time()))+".html" 
+        Fname =FileName+"/"+str(int(time.time()))+".html" 
         fw = open(Fname,'w+')
     try:
         text = '''
@@ -149,7 +151,18 @@ def main():
     ThreadExceNum = math.ceil( len(PageUrls) / ThreadNum  )
     #分组
     PageUrlGroup = []
+    #创建目录
+    global FileName
+    try:
+        os.makedirs("drops")
+    except:
+        print u"drops文件夹创建失败！"
+        FileName = str(int(time.time()))
+        print u"创建目录"
+        os.makedirs(FileName)
+
     j = 0
+
     for i in range(0,len(PageUrls)):
 
         if j % ThreadExceNum == 0:
